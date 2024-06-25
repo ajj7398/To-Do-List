@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>To-Do List</h1>
+    </header>
+    <main>
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="Add a new task...">
+            <button type="submit">Add Task</button>
+        </form>
+        <ul id="task-list">
+            <!-- Tasks will be dynamically added here -->
+        </ul>
+    </main>
+    
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const taskForm = document.getElementById('task-form');
+    const taskInput = document.getElementById('task-input');
+    const taskList = document.getElementById('task-list');
+
+    // Load tasks from localStorage
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    // Function to display tasks
+    function displayTasks() {
+        taskList.innerHTML = '';
+        tasks.forEach(function(task, index) {
+            const li = document.createElement('li');
+            li.textContent = task;
+            li.innerHTML += '<button class="delete-btn" data-index="' + index + '">Delete</button>';
+            taskList.appendChild(li);
+        });
+    }
+
+    // Display initial tasks
+    displayTasks();
+
+    // Event listener for adding tasks
+    taskForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const taskText = taskInput.value.trim();
+        if (taskText !== '') {
+            tasks.push(taskText);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            displayTasks();
+            taskInput.value = '';
+        }
+    });
+
+    // Event delegation for deleting tasks
+    taskList.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-btn')) {
+            const index = event.target.getAttribute('data-index');
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            displayTasks();
+        }
+    });
+});
+
+
+    </script>
+    <footer>
+        <p>&copy; Ajay Kushwaha | 2024</p>
+    </footer>
+
+</body>
+</html>
